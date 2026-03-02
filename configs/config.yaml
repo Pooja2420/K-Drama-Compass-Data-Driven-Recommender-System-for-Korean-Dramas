@@ -1,0 +1,20 @@
+project:
+  name: kdrama-compass
+  version: "1.0.0"
+
+data:
+  raw_dir: data/raw
+  processed_dir: data/processed
+  external_dir: data/external
+
+model:
+  artifacts_dir: models/artifacts
+  registry_dir: models/registry
+
+api:
+  host: "0.0.0.0"
+  port: 8000
+
+logging:
+  level: INFO
+  dir: logs
