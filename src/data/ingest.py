@@ -2,6 +2,7 @@
 Data ingestion module.
 Loads raw CSV files from data/raw/ and returns DataFrames.
 """
+
 from pathlib import Path
 
 import pandas as pd

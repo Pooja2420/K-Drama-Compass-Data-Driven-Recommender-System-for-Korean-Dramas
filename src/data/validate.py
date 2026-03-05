@@ -2,6 +2,7 @@
 Data validation module.
 Validates raw DataFrames against Pydantic schemas before ETL.
 """
+
 import pandas as pd
 from pydantic import BaseModel, ValidationError, field_validator
 

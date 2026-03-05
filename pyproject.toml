@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.backends.legacy:build"
+
+[project]
+name = "kdrama-compass"
+version = "1.0.0"
+description = "Data-driven recommender system for Korean dramas"
+requires-python = ">=3.10"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["src*"]
+
+[tool.isort]
+profile = "black"
+known_first_party = ["src"]
