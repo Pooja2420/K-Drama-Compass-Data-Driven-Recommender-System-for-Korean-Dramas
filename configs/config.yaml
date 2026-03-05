@@ -6,6 +6,15 @@ data:
   raw_dir: data/raw
   processed_dir: data/processed
   external_dir: data/external
+  files:
+    dramas: korean_drama.csv
+    reviews: reviews.csv
+    actors: wiki_actors.csv
+  processed_files:
+    dramas: cleaned_dramas.csv
+    reviews: cleaned_reviews.csv
+    actors: cleaned_actors.csv
+    merged: merged_actors_reviews.csv
 
 model:
   artifacts_dir: models/artifacts
