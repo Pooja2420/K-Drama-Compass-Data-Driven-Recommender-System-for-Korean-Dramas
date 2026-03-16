@@ -1,5 +1,7 @@
 """Recommendation endpoint — GET /recommend (JWT required)."""
 
+from __future__ import annotations
+
 import pandas as pd
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 

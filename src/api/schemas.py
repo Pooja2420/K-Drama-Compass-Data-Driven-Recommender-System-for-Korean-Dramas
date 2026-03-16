@@ -1,12 +1,16 @@
 """Pydantic request / response schemas for the K-Drama Compass API."""
 
+from __future__ import annotations
+
+from typing import Dict, List, Optional
+
 from pydantic import BaseModel, Field
 
 
 class HealthResponse(BaseModel):
     status: str
     version: str = "1.0.0"
-    models_loaded: dict[str, bool] = Field(default_factory=dict)
+    models_loaded: Dict[str, bool] = Field(default_factory=dict)
 
 
 class Token(BaseModel):
@@ -15,7 +19,7 @@ class Token(BaseModel):
 
 
 class TokenData(BaseModel):
-    username: str | None = None
+    username: Optional[str] = None
 
 
 class DramaOut(BaseModel):
@@ -27,18 +31,18 @@ class RecommendResponse(BaseModel):
     query: str
     model: str
     top_n: int
-    recommendations: list[DramaOut]
+    recommendations: List[DramaOut]
 
 
 class SearchResult(BaseModel):
     drama_name: str
-    genre: str | None = None
-    rating: float | None = None
+    genre: Optional[str] = None
+    rating: Optional[float] = None
 
 
 class SearchResponse(BaseModel):
     query: str
-    results: list[SearchResult]
+    results: List[SearchResult]
     total: int
 
 

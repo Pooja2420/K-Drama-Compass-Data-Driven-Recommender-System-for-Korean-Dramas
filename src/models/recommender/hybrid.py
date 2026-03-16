@@ -10,6 +10,8 @@ Both scores are min-max normalised to [0, 1] before blending.
 Artifacts saved to: models/artifacts/hybrid/
 """
 
+from __future__ import annotations
+
 from pathlib import Path
 
 import joblib
@@ -54,7 +56,7 @@ class HybridRecommender:
         self,
         cb_model: ContentBasedRecommender,
         cf_model: CollaborativeRecommender,
-    ) -> "HybridRecommender":
+    ) -> HybridRecommender:
         """Attach pre-fitted CB and CF models."""
         self.cb_model = cb_model
         self.cf_model = cf_model
@@ -96,9 +98,7 @@ class HybridRecommender:
 
         if cb_recs.empty and cf_recs.empty:
             logger.warning(f"No recommendations found for '{drama_name}'.")
-            return pd.DataFrame(
-                columns=["drama_name", "cb_score", "cf_score", "hybrid_score"]
-            )
+            return pd.DataFrame(columns=["drama_name", "cb_score", "cf_score", "hybrid_score"])
 
         # Normalise scores
         if not cb_recs.empty:
@@ -108,9 +108,7 @@ class HybridRecommender:
             cb_recs["cb_score"] = _minmax_norm(cb_recs["cb_score"])
 
         if not cf_recs.empty:
-            cf_recs = cf_recs.rename(columns={"cf_score": "cf_score"})[
-                ["drama_name", "cf_score"]
-            ]
+            cf_recs = cf_recs.rename(columns={"cf_score": "cf_score"})[["drama_name", "cf_score"]]
             cf_recs["cf_score"] = _minmax_norm(cf_recs["cf_score"])
 
         # Merge (outer join so we keep dramas from either model)
@@ -124,15 +122,10 @@ class HybridRecommender:
         )
 
         result = (
-            merged.sort_values("hybrid_score", ascending=False)
-            .head(top_n)
-            .reset_index(drop=True)
+            merged.sort_values("hybrid_score", ascending=False).head(top_n).reset_index(drop=True)
         )
 
-        logger.info(
-            f"Hybrid: {top_n} recommendations for '{drama_name}' "
-            f"(alpha={self.alpha})"
-        )
+        logger.info(f"Hybrid: {top_n} recommendations for '{drama_name}' " f"(alpha={self.alpha})")
         return result
 
     # ------------------------------------------------------------------
@@ -147,7 +140,7 @@ class HybridRecommender:
         return path
 
     @classmethod
-    def load(cls) -> "HybridRecommender":
+    def load(cls) -> HybridRecommender:
         path = ARTIFACT_DIR / "model.joblib"
         logger.info(f"Loading hybrid model from {path}")
         return joblib.load(path)

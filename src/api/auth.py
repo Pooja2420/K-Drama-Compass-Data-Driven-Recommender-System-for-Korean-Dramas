@@ -1,5 +1,7 @@
 """JWT authentication utilities for the K-Drama Compass API."""
 
+from __future__ import annotations
+
 from datetime import datetime, timedelta, timezone
 
 from jose import JWTError, jwt

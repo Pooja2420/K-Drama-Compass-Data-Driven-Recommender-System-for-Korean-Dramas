@@ -1,5 +1,7 @@
 """Authentication endpoints — POST /auth/token."""
 
+from __future__ import annotations
+
 from datetime import timedelta
 
 from fastapi import APIRouter, Depends, HTTPException, status

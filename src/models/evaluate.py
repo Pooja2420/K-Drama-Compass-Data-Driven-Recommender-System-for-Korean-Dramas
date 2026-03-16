@@ -10,6 +10,8 @@ Metrics:
   - Intra-list diversity: avg pairwise dissimilarity within a rec list
 """
 
+from __future__ import annotations
+
 import numpy as np
 import pandas as pd
 
@@ -64,9 +66,7 @@ def ndcg_at_k(recommended: list, relevant: set, k: int) -> float:
     Penalises relevant items appearing lower in the ranked list.
     """
     top_k = recommended[:k]
-    dcg = sum(
-        1.0 / np.log2(rank + 2) for rank, item in enumerate(top_k) if item in relevant
-    )
+    dcg = sum(1.0 / np.log2(rank + 2) for rank, item in enumerate(top_k) if item in relevant)
     ideal_hits = min(len(relevant), k)
     idcg = sum(1.0 / np.log2(rank + 2) for rank in range(ideal_hits))
     return dcg / idcg if idcg > 0 else 0.0
@@ -157,9 +157,7 @@ def evaluate_recommender(
     drama_users = df_reviews.groupby("title")["user_id"].apply(set).to_dict()
 
     sample_dramas = (
-        df_dramas["drama_name"]
-        .sample(min(sample_n, len(df_dramas)), random_state=42)
-        .tolist()
+        df_dramas["drama_name"].sample(min(sample_n, len(df_dramas)), random_state=42).tolist()
     )
 
     p_scores, r_scores, ndcg_scores, ap_scores = [], [], [], []
@@ -200,8 +198,6 @@ def evaluate_recommender(
     }
 
     for name, val in metrics.items():
-        logger.info(
-            f"  {name}: {val:.4f}" if isinstance(val, float) else f"  {name}: {val}"
-        )
+        logger.info(f"  {name}: {val:.4f}" if isinstance(val, float) else f"  {name}: {val}")
 
     return metrics

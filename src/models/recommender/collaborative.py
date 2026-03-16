@@ -8,6 +8,8 @@ based on latent factor similarity.
 Artifacts saved to: models/artifacts/collaborative/
 """
 
+from __future__ import annotations
+
 from pathlib import Path
 
 import joblib
@@ -54,7 +56,7 @@ class CollaborativeRecommender:
         df_reviews: pd.DataFrame,
         test_size: float = 0.1,
         random_state: int = 42,
-    ) -> "CollaborativeRecommender":
+    ) -> CollaborativeRecommender:
         """
         Build user-item matrix and fit SVD.
 
@@ -76,9 +78,7 @@ class CollaborativeRecommender:
         logger.info(f"Building user-item matrix: {n_users} users x {n_dramas} dramas")
 
         # Train / test split for evaluation
-        train_df, test_df = train_test_split(
-            df, test_size=test_size, random_state=random_state
-        )
+        train_df, test_df = train_test_split(df, test_size=test_size, random_state=random_state)
 
         # Build sparse matrix from training data
         train_sparse = csr_matrix(
@@ -97,9 +97,7 @@ class CollaborativeRecommender:
         # Evaluate on test set
         rmse = self._evaluate(test_df)
         logger.info(f"Collaborative RMSE on test set: {rmse:.4f}")
-        logger.info(
-            f"Explained variance: " f"{self.svd.explained_variance_ratio_.sum():.4f}"
-        )
+        logger.info(f"Explained variance: " f"{self.svd.explained_variance_ratio_.sum():.4f}")
 
         return self
 
@@ -171,7 +169,7 @@ class CollaborativeRecommender:
         return path
 
     @classmethod
-    def load(cls) -> "CollaborativeRecommender":
+    def load(cls) -> CollaborativeRecommender:
         path = ARTIFACT_DIR / "model.joblib"
         logger.info(f"Loading collaborative model from {path}")
         return joblib.load(path)

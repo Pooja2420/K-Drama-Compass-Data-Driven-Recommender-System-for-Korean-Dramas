@@ -125,26 +125,21 @@ class TestRecommendEndpoint:
         auth_headers: dict,
         fitted_content_model,
     ):
-        """Inject a fitted model via dependency override and check response shape."""
-        from src.api.dependencies import get_content_based_model
-        from src.api.main import create_app
-
-        app = create_app()
-        app.dependency_overrides[get_content_based_model] = lambda: fitted_content_model
-
-        with TestClient(app, raise_server_exceptions=True) as client:
-            # Get token from the new client
-            token = client.post(
-                "/auth/token",
-                data={"username": "demo", "password": "kdrama123"},
-            ).json()["access_token"]
-            headers = {"Authorization": f"Bearer {token}"}
-            response = client.get(
+        """Patch the model loader directly and check response shape."""
+        with patch(
+            "src.api.routers.recommend._MODEL_LOADERS",
+            {
+                "content_based": lambda: fitted_content_model,
+                "collaborative": lambda: None,
+                "hybrid": lambda: None,
+            },
+        ):
+            response = api_client.get(
                 "/recommend?drama_name=Drama+0&model=content_based",
-                headers=headers,
+                headers=auth_headers,
             )
 
-        # Either 200 with recs or 404 (drama not in the tiny synthetic set)
+        # Either 200 with recs or 404 (drama name not in tiny synthetic set)
         assert response.status_code in (200, 404)
         if response.status_code == 200:
             body = response.json()
@@ -165,16 +160,10 @@ class TestSearchEndpoint:
         response = api_client.get("/search")
         assert response.status_code == 422
 
-    def test_search_with_mock_data(self, dramas_df: pd.DataFrame):
-        """Inject synthetic dramas and verify search logic."""
-        from src.api.dependencies import get_dramas_df
-        from src.api.main import create_app
-
-        app = create_app()
-        app.dependency_overrides[get_dramas_df] = lambda: dramas_df
-
-        with TestClient(app, raise_server_exceptions=True) as client:
-            response = client.get("/search?q=Drama")
+    def test_search_with_mock_data(self, api_client: TestClient, dramas_df: pd.DataFrame):
+        """Patch the data loader directly and verify search logic."""
+        with patch("src.api.routers.search.get_dramas_df", return_value=dramas_df):
+            response = api_client.get("/search?q=Drama")
 
         assert response.status_code == 200
         body = response.json()
@@ -182,15 +171,9 @@ class TestSearchEndpoint:
         assert "query" in body
         assert "results" in body
 
-    def test_search_no_match_returns_empty(self, dramas_df: pd.DataFrame):
-        from src.api.dependencies import get_dramas_df
-        from src.api.main import create_app
-
-        app = create_app()
-        app.dependency_overrides[get_dramas_df] = lambda: dramas_df
-
-        with TestClient(app, raise_server_exceptions=True) as client:
-            response = client.get("/search?q=xyznonexistentdrama999")
+    def test_search_no_match_returns_empty(self, api_client: TestClient, dramas_df: pd.DataFrame):
+        with patch("src.api.routers.search.get_dramas_df", return_value=dramas_df):
+            response = api_client.get("/search?q=xyznonexistentdrama999")
 
         assert response.status_code == 200
         assert response.json()["total"] == 0

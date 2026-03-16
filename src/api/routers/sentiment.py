@@ -1,5 +1,7 @@
 """Sentiment endpoint — GET /sentiment/{drama_name}."""
 
+from __future__ import annotations
+
 import pandas as pd
 from fastapi import APIRouter, HTTPException, status
 

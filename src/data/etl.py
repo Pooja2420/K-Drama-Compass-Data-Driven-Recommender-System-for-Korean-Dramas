@@ -4,6 +4,8 @@ Cleans and transforms raw DataFrames → saves to data/processed/.
 Based on logic from notebooks/KDrama.ipynb, refactored for production.
 """
 
+from __future__ import annotations
+
 from pathlib import Path
 
 import numpy as np

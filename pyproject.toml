@@ -39,6 +39,7 @@ dependencies = [
     "pydantic-settings>=2.2",
     "python-jose[cryptography]>=3.3",
     "passlib[bcrypt]>=1.7",
+    "bcrypt<4.0",
     "python-multipart>=0.0.9",
     "httpx>=0.27",
 
@@ -90,7 +91,11 @@ select = [
     "C4",  # flake8-comprehensions
     "UP",  # pyupgrade
 ]
-ignore = ["E501", "B008", "B905"]
+ignore = [
+    "E501",
+    "B008", "B905",
+    "UP006", "UP007", "UP035",  # Optional/Dict/List needed for Pydantic + Python 3.9
+]
 
 [tool.ruff.lint.isort]
 known-first-party = ["src"]

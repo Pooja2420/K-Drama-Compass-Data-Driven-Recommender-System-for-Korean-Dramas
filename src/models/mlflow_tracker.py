@@ -17,6 +17,8 @@ Usage:
         tracker.log_artifact(model.save())
 """
 
+from __future__ import annotations
+
 import os
 from datetime import datetime, timezone
 from pathlib import Path
@@ -40,7 +42,7 @@ class MLflowTracker:
         self.tags = tags or {}
         self._run = None
 
-    def __enter__(self) -> "MLflowTracker":
+    def __enter__(self) -> MLflowTracker:
         mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
         mlflow.set_experiment(EXPERIMENT_NAME)
 
@@ -54,9 +56,7 @@ class MLflowTracker:
         default_tags.update(self.tags)
 
         self._run = mlflow.start_run(run_name=full_run_name, tags=default_tags)
-        logger.info(
-            f"MLflow run started: {full_run_name} " f"(id={self._run.info.run_id})"
-        )
+        logger.info(f"MLflow run started: {full_run_name} " f"(id={self._run.info.run_id})")
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
@@ -78,9 +78,7 @@ class MLflowTracker:
         """Log a dict of evaluation metrics."""
         mlflow.log_metrics(metrics, step=step)
         for k, v in metrics.items():
-            logger.info(
-                f"  metric {k}={v:.4f}" if isinstance(v, float) else f"  metric {k}={v}"
-            )
+            logger.info(f"  metric {k}={v:.4f}" if isinstance(v, float) else f"  metric {k}={v}")
 
     def log_artifact(self, path: Path) -> None:
         """Log a file or directory as an MLflow artifact."""
@@ -131,8 +129,7 @@ def get_best_run(metric: str = "precision@10") -> dict:
 
     best = runs[0]
     logger.info(
-        f"Best run: {best.info.run_name} | "
-        f"{metric}={best.data.metrics.get(metric, 'N/A')}"
+        f"Best run: {best.info.run_name} | " f"{metric}={best.data.metrics.get(metric, 'N/A')}"
     )
     return {
         "run_id": best.info.run_id,

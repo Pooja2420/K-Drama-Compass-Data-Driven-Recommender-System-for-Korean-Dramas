@@ -1,5 +1,7 @@
 """Shared FastAPI dependencies: cached model loaders and auth guard."""
 
+from __future__ import annotations
+
 from functools import lru_cache
 
 import pandas as pd

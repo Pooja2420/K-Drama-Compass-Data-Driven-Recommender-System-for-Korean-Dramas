@@ -8,6 +8,8 @@ for a given drama title.
 Artifacts saved to: models/artifacts/content_based/
 """
 
+from __future__ import annotations
+
 from pathlib import Path
 
 import joblib
@@ -40,7 +42,7 @@ class ContentBasedRecommender:
         self,
         feature_store: pd.DataFrame,
         df_dramas: pd.DataFrame,
-    ) -> "ContentBasedRecommender":
+    ) -> ContentBasedRecommender:
         """
         Build cosine similarity matrix from feature_store.
 
@@ -127,7 +129,7 @@ class ContentBasedRecommender:
         return path
 
     @classmethod
-    def load(cls) -> "ContentBasedRecommender":
+    def load(cls) -> ContentBasedRecommender:
         path = ARTIFACT_DIR / "model.joblib"
         logger.info(f"Loading content-based model from {path}")
         return joblib.load(path)
@@ -154,5 +156,5 @@ def catalog_coverage(
     catalog_size: int,
 ) -> float:
     """Fraction of the catalog that appears in at least one recommendation list."""
-    unique = set(item for recs in all_recommendations for item in recs)
+    unique = {item for recs in all_recommendations for item in recs}
     return len(unique) / catalog_size if catalog_size > 0 else 0.0

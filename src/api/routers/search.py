@@ -1,5 +1,7 @@
 """Drama search endpoint — GET /search."""
 
+from __future__ import annotations
+
 import pandas as pd
 from fastapi import APIRouter, HTTPException, Query, status
 
