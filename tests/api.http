@@ -1,0 +1,92 @@
+### K-Drama Compass API — REST Client test requests
+### Install: VSCode extension "REST Client" by Humao (humao.rest-client)
+### Usage: Click "Send Request" above any request block
+###
+### Start the server first:
+###   python scripts/run_api.py --reload
+### ──────────────────────────────────────────────────────────────────────────
+
+@baseUrl = http://localhost:8000
+
+# ─────────────────────────────────────────
+# 1. Health Check (public — no auth needed)
+# ─────────────────────────────────────────
+
+### GET /health
+GET {{baseUrl}}/health
+Accept: application/json
+
+
+# ─────────────────────────────────────────
+# 2. Get a JWT Access Token
+# ─────────────────────────────────────────
+
+### POST /auth/token — demo user
+# @name login
+POST {{baseUrl}}/auth/token
+Content-Type: application/x-www-form-urlencoded
+
+username=demo&password=kdrama123
+
+###
+# Save the token returned above, then set it here:
+@token = PASTE_ACCESS_TOKEN_HERE
+
+
+# ─────────────────────────────────────────
+# 3. Recommendations  (JWT required)
+# ─────────────────────────────────────────
+
+### GET /recommend — hybrid model (default)
+GET {{baseUrl}}/recommend?drama_name=Crash Landing on You&top_n=10&model=hybrid
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### GET /recommend — content-based model
+GET {{baseUrl}}/recommend?drama_name=My Love from the Star&top_n=5&model=content_based
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### GET /recommend — collaborative model
+GET {{baseUrl}}/recommend?drama_name=Goblin&top_n=5&model=collaborative
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### GET /recommend — without token (should return 401)
+GET {{baseUrl}}/recommend?drama_name=Goblin&top_n=5
+Accept: application/json
+
+
+# ─────────────────────────────────────────
+# 4. Search  (public — no auth needed)
+# ─────────────────────────────────────────
+
+### GET /search — search by title substring
+GET {{baseUrl}}/search?q=love&limit=10
+Accept: application/json
+
+### GET /search — single result
+GET {{baseUrl}}/search?q=Goblin&limit=5
+Accept: application/json
+
+
+# ─────────────────────────────────────────
+# 5. Sentiment  (public — no auth needed)
+# ─────────────────────────────────────────
+
+### GET /sentiment/{drama_name}
+GET {{baseUrl}}/sentiment/Crash Landing on You
+Accept: application/json
+
+### GET /sentiment — drama not found (should return 404)
+GET {{baseUrl}}/sentiment/NonExistentDrama
+Accept: application/json
+
+
+# ─────────────────────────────────────────
+# 6. Rate limit test
+# ─────────────────────────────────────────
+
+### GET /health — rapid fire (run multiple times quickly to trigger 429)
+GET {{baseUrl}}/health
+Accept: application/json

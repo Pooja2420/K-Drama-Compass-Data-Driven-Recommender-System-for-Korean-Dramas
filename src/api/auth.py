@@ -1,16 +1,16 @@
 """JWT authentication utilities for the K-Drama Compass API."""
 
-import os
 from datetime import datetime, timedelta, timezone
 
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 
 from src.api.schemas import TokenData
+from src.utils.config import settings
 
-SECRET_KEY = os.getenv("SECRET_KEY", "kdrama-compass-dev-secret-change-in-prod")
+SECRET_KEY = settings.secret_key
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60
+ACCESS_TOKEN_EXPIRE_MINUTES = settings.access_token_expire_minutes
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
