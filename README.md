@@ -582,9 +582,4 @@ The GitHub Actions workflow (`.github/workflows/ci.yml`) runs on every push and 
 4. Open a pull request — CI runs automatically.
 
 ---
-
-## License
-
-MIT License — see `LICENSE` for details.
-
-*Built by Pooja Mohan*
+*Built by Pooja Venugopal Baskaran*
